@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link rel="stylesheet" type="text/css" media="all" href="style.css" />
+	<link rel="stylesheet" type="text/css" id="aminoColour" title="protein" href="./defaultamino.css" > 
+	
+	<title>Distance alignment metrics in JavaScript</title>
+	
+		
+</head><body> 
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+	<script type="text/javascript" src="script/main.js"></script>
+	<script type="text/javascript" src="script/distances.js"></script>
+	<script type="text/javascript" src="script/homologySets.js"></script>
+	<script type="text/javascript" src="script/resorting.js"></script>
+	<script type="text/javascript" src="script/sequence.js"></script>
+	<script type="text/javascript" src="script/transposition.js"></script>
+	<script type="text/javascript" src="script/consistency.js"></script>
+	<script type="text/javascript" src="script/visualiser2.js"></script>
+	<script type="text/javascript" src="script/scroller.js"></script>
+	<script type="text/javascript" src="script/result.js"></script>
+	
+	<div id="errorBox" style="padding: 50px; background-color: #FF4444; text-align: center; color: white; display: none;">
+	</div>
+	
+	<div id="controlPanel" style="display:none;">
+		<div id="homologyPanel">
+			<p>Homology type: 
+			<select name="homologyType" id="homologyType">
+				<option name="homologyOption" id="ssp" value="0" selected="selected">Symmetrised sum-of-pairs</option>
+				<option name="homologyOption" id="simple" value="1">Simple homology distance</option>
+				<option name="homologyOption" id="pos" value="2">Homology distance with gaps labelled by position</option>
+				<option name="homologyOption" id="evol" disabled="disabled" value="3" />Homology distance with tree-labelled gaps (not available yet)</option>
+			</select></p>
+			</div>
+		<div id="distanceVisualizationPanel" >
+			<p>Distance visualization scheme: 
+			<select name="distanceVisualizationType" id="distanceVisualizationType">
+				<option name="distanceVisualizationOption" id="noDistance" selected="selected" value="2">None</option>
+				<option name="distanceVisualizationOption" id="redfade" value="3">255 Shades of Red</option>
+				<option name="distanceVisualizationOption" id="sameOpacity" value="0">Fade distant aminoacids/nucleotides</option>
+				<option name="distanceVisualizationOption" id="diffOpacity" value="1">Fade close aminoacids/nucleotides</option>
+			</select></p>
+			</div>
+	</div>
+	
+	<div id="input"><p>Paste alignment 1</p>
+	<textarea id="alignment1" rows="10" cols="120" style="overflow:scroll; white-space:nowrap; font-type:monospace;">>1qf9_A
+--MEKSKPNVVFVLGGPGSGKGTQCANIVRDFGWVHLSAGDLLRQEQ-QSGSKDGEMIATMIKNGEIVPSIVTVKLLKNAIDANQGKN---FLVDGFPRNEENNNSWEENM-KDFVDTKFVLFFDCPEEVMTQRLLKRGESSG---------------------------RSDDNIESIKKRFNTFNVQTKLVIDHYNKFDKVKIIPANRD---VNEVYNDVENLFKSMGF------
+>1uky_
+PAFSPDQVSVIFVLGGPGAGKGTQCEKLVKDYSFVHLSAGDLLRAEQGRAGSQYGELIKNCIKEGQIVPQEITLALLRNAISDNVKANKHKFLIDGFPRKMDQAISFER----DIVESKFILFFDCPEDIMLERLLERGKTSG---------------------------RSDDNIESIKKRFNTFKETSMPVIEYFETKSKVVRVRCDRS---VEDVYKDVQDAIRDSL-------
+>1zak_A
+-----ADPLKVMISGAPASGKGTQCELIKTKYQLAHISAGDLLRAEI-AAGSENGKRAKEFMEKGQLVPDEIVVNMVKERLRQPDAQENG-WLLDGYPRSYSQAMALET----LEIRPDTFILLDVPDELLVERVVGRRLDPVTGKIYHLKYSPPE----NEEIASRLTQRFDDTEEKVKLRLETYYQNIESLLSTYENIIVKVQGDATVD-AVFAKIDELLGSILEKKNEMVSST-
+>1zip_
+--------MNLVLMGLPGAGKGTQAEKIVAAYGIPHISTGDMFRAAM-KEGTPLGLQAKQYMDRGDLVPDEVTIGIVRERLSKD-DCQNG-FLLDGFPRTVAQAEALETMLADIGRKLDYVIHIDVRQDVLMERLTGRRICRNCGATYHLIFHPPAKPGVCDKCGGELYQRADDNEATVANRLEVNMKQMKPLVDFYEQKGYLRNINGEQD---MEKVFADIRELLGGLAR------
+>2ak2_
+-----PKGVRAVLLGPPGAGKGTQAPKLAKNFCVCHLATGDMLRAMV-ASGSELGKKLKATMDAGKLVSDEMVLELIEKNLETP-PCKNG-FLLDGFPRTVRQAEMLDDLMEKRKEKLDSVIEFSIPDSLLIRRITGRLIHPQSGRSYHEEFNPPKEPMKDDITGEPLIRRSDDNKKALKIRLEAYHTQTTPLVEYYSKRGIHSAIDASQT----PDV--VFASILAAFSKATS---
+>2ak3_A
+--GASARLLRAAIMGAPGSGKGTVSSRITKHFELKHLSSGDLLRDNM-LRGTEIGVLAKTFIDQGKLIPDDVMTRLVLHELKNL-TQYN--WLLDGFPRTLPQAEALD-----RAYQIDTVINLNVPFEVIKQRLTARWIHPGSGRVYNIEFNPPKTMGIDDLTGEPLVQREDDRPETVVKRLKAYEAQTEPVLEYYRKKGVLETFSGTETNKIWPHVYAFLQTKLPQRSQETSVTP
+>3adk_
+MEEKLKKSKIIFVVGGPGSGKGTQCEKIVQKYGYTHLSTGDLLRAEV-SSGSARGKMLSEIMEKGQLVPLETVLDMLRDAMVAKVDTSKG-FLIDGYPREVKQGEEFER----KIGQPTLLLYVDAGPETMTKRLLKRGETSG---------------------------RVDDNEETIKKRLETYYKATEPVIAFYEKRGIVRKVNAEGS---VDDVFSQVCTHLDTLK-------
+</textarea>
+	<p>Paste alignment 2</p>
+	<textarea id="alignment2" rows="10" cols="120" style="overflow:scroll; white-space:nowrap; font-type:monospace;">>1qf9_A
+--MEKSKPNVVFVLGGPGSGKGTQCANIVRDFGWVHLSAGDLLRQEQ-QSGSKDGEMIATMIKNGEIVPSIVTVKLLKNAIDANQGKN---FLVDGFPRNEENNNSWEENMKDFVDT-KFVLFFDCPEEVMTQRLLKR---------------------------GESSGRSDDNIESIKKRFNTFNVQTKLVIDHYNKFDKVKIIPANRDVNEVYNDVENLFKSMGF----------
+>1uky_
+PAFSPDQVSVIFVLGGPGAGKGTQCEKLVKDYSFVHLSAGDLLRAEQGRAGSQYGELIKNCIKEGQIVPQEITLALLRNAISDNVKANKHKFLIDGFPRKMDQAISFE---RDIVES-KFILFFDCPEDIMLERLLER---------------------------GKTSGRSDDNIESIKKRFNTFKETSMPVIEYFETKSKVVRVRCDRSVEDVYKDVQDAIRDSL-----------
+>1zak_A
+-----ADPLKVMISGAPASGKGTQCELIKTKYQLAHISAGDLLRAEI-AAGSENGKRAKEFMEKGQLVPDEIVVNMVKERLRQPDAQEN-GWLLDGYPRSYSQAMALE---TLEIRP-DTFILLDVPDELLVERVVGRRLDPVTGKIYHLKYSPPE----NEEIASRLTQRFDDTEEKVKLRLETYYQNIESLLSTYE--NIIVKVQGDATVDAVFAKIDELLGSILEKKNEMVSST-
+>1zip_
+--------MNLVLMGLPGAGKGTQAEKIVAAYGIPHISTGDMFRAAM-KEGTPLGLQAKQYMDRGDLVPDEVTIGIVRERLSKDDCQN--GFLLDGFPRTVAQAEALETMLADIGRKLDYVIHIDVRQDVLMERLTGRRICRNCGATYHLIFHPPAKPGVCDKCGGELYQRADDNEATVANRLEVNMKQMKPLVDFYEQKGYLRNINGEQDMEKVFADIRELLGGLAR----------
+>2ak2_
+-----PKGVRAVLLGPPGAGKGTQAPKLAKNFCVCHLATGDMLRAMV-ASGSELGKKLKATMDAGKLVSDEMVLELIEKNLETPPCKN--GFLLDGFPRTVRQAEMLDDLMEKRKEKLDSVIEFSIPDSLLIRRITGRLIHPQSGRSYHEEFNPPKEPMKDDITGEPLIRRSDDNKKALKIRLEAYHTQTTPLVEYYSKRGIHSAIDASQTPDVVFASILAAFSKATS----------
+>2ak3_A
+--GASARLLRAAIMGAPGSGKGTVSSRITKHFELKHLSSGDLLRDNM-LRGTEIGVLAKTFIDQGKLIPDDVMTRLVLHELKNLTQYN---WLLDGFPRTLPQAEALD-----RAYQIDTVINLNVPFEVIKQRLTARWIHPGSGRVYNIEFNPPKTMGIDDLTGEPLVQREDDRPETVVKRLKAYEAQTEPVLEYYRKKGVLETFSGTET-NKIWPHVYAFLQTKLPQRSQETSVTP
+>3adk_
+MEEKLKKSKIIFVVGGPGSGKGTQCEKIVQKYGYTHLSTGDLLRAEV-SSGSARGKMLSEIMEKGQLVPLETVLDMLRDAMVAKVDTSK-GFLIDGYPREVKQGEEFE---RKIGQP-TLLLYVDAGPETMTKRLLKR---------------------------GETSGRVDDNEETIKKRLETYYKATEPVIAFYEKRGIVRKVNAEGSVDDVFSQVCTHLDTLK-----------
+</textarea>
+	
+	<input type="button" name="button" Value="submit" onClick="process()"></div>
+	
+	
+	
+	
+</body>
+</html>
