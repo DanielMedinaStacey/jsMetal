@@ -56,7 +56,13 @@ function getCharacterDistance(homSetsA, homSetsB){
 				}*/
 			}
 			
-			charDist[SSP][i][j] = 1-(intersection/union);
+			if (union==0){
+                                //special case: 0/0=0 distance rather than NaN
+                                charDist[SSP][i][j] = 0.0;
+                        }else
+                        {
+                                charDist[SSP][i][j] = 1-(intersection/union);
+                        }
 			charDist[SIM][i][j]/=setSize;
 			charDist[POS][i][j]/=setSize;
 			// charDist[EVO][i][j]/=setSize;
