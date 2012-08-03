@@ -170,7 +170,7 @@ function process() {
 	
 	$("#homologyType").change(function () {
 		
-		var homType=parseInt($(this).val());
+		homType=parseInt($(this).val());
 		
 		if(cssCache[homType][visType] == undefined){
 			cssCache[homType][visType] = [];
@@ -188,7 +188,7 @@ function process() {
 	$("#distanceVisualizationType").change(function () {
 		$("#distanceVisualizationType option:selected").each(function () {
 			
-			var visType=parseInt($(this).val());
+			visType=parseInt($(this).val());
 			switch (visType){
 			case 2:
 				$("#aminoColour").attr('href','./defaultamino.css');
