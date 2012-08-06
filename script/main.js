@@ -139,7 +139,9 @@ function process() {
 	});
 	
 	$("#alnA_seqs").scroll(function() { 
-		
+		$("#alnA_names").scrollTop($("#alnA_seqs").scrollTop());
+		$("#alnB_seqs").scrollTop($("#alnA_seqs").scrollTop());
+	
 		$("#alnA"+"_"+focusSeq+"_"+oldCentral).removeClass("centralChar");
 		$("#alnB"+"_"+focusSeq+"_"+oldCentral).removeClass("centralChar");
 		
@@ -154,6 +156,9 @@ function process() {
 	});
 	
 	$("#alnB_seqs").scroll(function() { 
+		$("#alnB_names").scrollTop($("#alnB_seqs").scrollTop());
+		$("#alnA_seqs").scrollTop($("#alnB_seqs").scrollTop());
+		
 		
 		$("#alnA"+"_"+focusSeq+"_"+oldCentral).removeClass("centralChar");
 		$("#alnB"+"_"+focusSeq+"_"+oldCentral).removeClass("centralChar");

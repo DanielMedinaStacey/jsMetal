@@ -44,7 +44,9 @@ div.names{
 	font-family: monospace;
 	overflow: hidden;
 	width:10em;
-	padding-top:10px;
+	height:10em;
+	/*padding-top:10px;*/
+
 	text-overflow: ellipsis;
 	float:left;
 	/*float:left;margin-left:2px; padding-left:.5em; border-right:1px solid gray; width:170px;overflow:hidden;line-height:120%;font-family:monospace; */
@@ -53,10 +55,11 @@ div.names{
 
 div.seqs{
 	overflow:scroll; 
-	overflow-y:auto; 
+	/*overflow-y:auto; */
+	height:10em;
 	white-space:nowrap; 
 	font-family:monospace; 
-	padding-top:10px;
+	/*padding-top:10px;*/
 	width:auto;
 	/*white-space:nowrap;width:auto;margin:0px;overflow:auto;white-space:nowrap;width:auto;margin:0px;height:auto;overflow:auto;line-height:120%;font-family:monospace; */
 
