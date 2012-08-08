@@ -13,7 +13,7 @@ var G = {};
 function process() {
 	
 	$("#errorBox").css("display","none");
-	$("#input").hide();
+	
 	G.ignoreNamesFlag = false; //TODO
 	G.sequenceType = "Nucleotide"; //Assume sequence is a nucleotide until parser() says otherwise
 	
@@ -32,6 +32,23 @@ function process() {
 		G.origLengths = seqDetails[1];
 		G.origSeqs = seqDetails[2];
 		
+		//remove whitespace from newick string input
+		newick_string=$("#newick").val().replace(/\s/g, "");
+		
+		//if there's anything left, it had better be newick tree or we will be very upset.
+		if(newick_string){
+			var root=parseNewickString(newick_string);
+			//check if names match those of the sequences
+			treeNames = [];
+			for(var i=0;i<root.length;i++){
+				treeNames.push(root[i].name);
+			}
+			treeNames.sort();
+			for(var i=0;i<alnA.length;i++){
+				if(treeNames[i] != alnA[i].name) { throw "Error: names differ in newick tree and alignments"};
+			}
+			if(treeNames[alnA.length] != undefined){throw "Error: there are more names in newick tree than in alignments";}
+		}else{root=null};
 	}
 
 	catch(e)
@@ -40,9 +57,10 @@ function process() {
 		$("#errorBox").fadeIn();
 		return;
 	}
+	$("#input").hide();
 				
-	homSetsA = getHomologySets(alnA);
-	homSetsB = getHomologySets(alnB);
+	homSetsA = getHomologySets(alnA,root);
+	homSetsB = getHomologySets(alnB,root);
 
 	distances= getDistances(homSetsA,homSetsB);
 	$("#controlPanel").css("display","");

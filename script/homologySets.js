@@ -1,8 +1,8 @@
 // GETHOMOLOGYSETS
-function getHomologySets(seqs){
+function getHomologySets(seqs,root){
 	
 	globalBubbleSort(seqs);
-	labeller(seqs);
+	labeller(seqs,root);
 	
 	var homologySets = [];
 	homologySets[SSP] = [];
