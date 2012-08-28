@@ -9,7 +9,7 @@
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center,dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed,  figure, figcaption, footer, header, hgroup,  menu, nav, output, ruby, section, summary, time, mark, audio, video { margin: 0; padding: 0; border: 0; font-size: 100%;	font: inherit; vertical-align: baseline; } article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {	display: block;} body { line-height: 1; } ol, ul { list-style: none; } blockquote, q { quotes: none; } blockquote:before, blockquote:after, q:before, q:after { content: ''; content: none; } table { border-collapse: collapse; border-spacing: 0; } 
 
 /** Base Body Styles **/
-body{ background:#fff; color:#000; font:14px Arial, Helvetica, "Trebuchet MS", sans-serif;}
+body{ background:#ddd; color:#000; font:14px Arial, Helvetica, "Trebuchet MS", sans-serif;}
 
 h1,h2,h3,h4,h5,h6{ font-weight:bold; }
 h1{ font-size:30px;}
@@ -38,7 +38,67 @@ a:hover { color: #036; }
 
 #visualiser{
 	white-space:nowrap;width:auto;margin:0px;height:auto;overflow:hidden;font-size:12px;
+	background-color: white;
 }
+
+#header{
+	padding:10px;
+	font-size:20px;
+	font-weight:bold;
+	height: 2 em;
+	line-height:2em;
+	background-color: gold;
+}
+#progname{
+	font-size:30px;
+	font-style:italic;
+	
+	}
+textarea.alnInput{	
+	overflow:scroll; 
+	white-space:nowrap; 
+	font-family:monospace;
+	width:99%;
+	resize: none; 
+}
+#input{
+	
+	float:right;
+	width:70%;
+	margin:1.25%;
+	}
+#submit{
+	width:10em;
+	height:2em;
+	float:right;
+	}
+#visbox{
+
+	float:right;
+	}
+	
+#instructions{
+	
+	text-align:justify;
+	float:left;
+	width:25%;
+	margin:1.25%;
+	}
+#instructions p{
+padding:5px;
+}
+#instructions p em{
+font-style:italic;
+}
+#instructions p strong{
+font-weight:bold;
+}
+#instructions p cite {
+font-family:"Georgia", "Times New Roman", Times, serif;
+
+
+}
+
 
 div.names{
 	font-family: monospace;

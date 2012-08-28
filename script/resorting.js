@@ -1,49 +1,48 @@
-// CONTENTS
-// function globalBubbleSort(alignment)
-// function areNonOverlapping(columnA, columnB)
-// function shouldBeFlipped(leftColumn, rightColumn)
 
 // GLOBALBUBBLESORT
 
-function globalBubbleSort(alignment) {
+function resortNonOverlapping(alignment) {
+		var START=new Date();
 	
-	var columns = transposeSequence(getContent(alignment));
 	var repeat;
 	var temp;
 	do{
 		repeat = false;
 		
-		for (var i = 0; i < (alignment[0].content.length - 1); i++){
+		for (var j = 0; j < (alignment[0].content.length - 1); j++){
 			
-			if( areNonOverlapping( columns[i], columns[i+1]) ){
+			if( areNonOverlapping( j,alignment) ){
 				
-				if( shouldBeFlipped( columns[i], columns[i+1]) ){
-					//switcheroo
-					temp = columns[i];
-					columns[i] = columns[i+1];
-					columns[i+1] = temp;
-					//there was at least one flipped column; repeat the loop
-					repeat = true;
+				if( shouldBeFlipped( j,alignment) ){
+					
+					for(var i=0;i<G.sequenceNumber;i++){
+						var newSeq= alignment[i].content.substr(0,j).concat(alignment[i].content[j+1]).concat(alignment[i].content[j]).concat(alignment[i].content.substr(j+2));
+						alignment[i].content = newSeq;
+						
+						}
+					repeat=true;
+					
 				}
 			}
 		}
 	
 	}while(repeat);
+	var  END=new Date();
 	
-	putContent(alignment,transposeSequence(columns));
+	return alignment;
 }
 
 // ARENONOVERLAPPING
 // Tests if two columns are non-overlapping. We assume they are until
 // we find a pair of non-gap characters.
-function areNonOverlapping(columnA, columnB){
+function areNonOverlapping(j,aln){
 	
 	var nonOverlapping = true;
 	
 	for (var i =0; i<G.sequenceNumber;i++){
 		
 		//The moment we find a pair where neither character is gap, the columns are non-overlapping
-		if( columnA[i] != "-" && columnB[i] != "-"){
+		if( aln[i][j] != "-" && aln[i][j+1] != "-"){
 			nonOverlapping = false;
 			break;
 		}
@@ -57,20 +56,20 @@ function areNonOverlapping(columnA, columnB){
 // SHOULDBEFLIPPED
 // Tests if two *confirmed non-overlapping* columns should be flipped. Will do weird things
 // if passed overlapping columns.
-function shouldBeFlipped(leftColumn, rightColumn){
+function shouldBeFlipped(j,aln){
 	
 	var flipThem = false;
 	
 	for(var i=0; i<G.sequenceNumber;i++){
 		
 		// Are both characters gaps? Let's continue
-		if(leftColumn[i] == "-" && rightColumn[i]=="-"){
+		if(aln[i][j] == "-" && aln[i][j+1]=="-"){
 			continue;
 		}
 		// No? Then only one of them must be a gap (or something has gone horribly wrong).
 		// If it's the one on the right, we must flip the columns. Whatever the case, we break the loop.
 		else{
-			flipThem = (rightColumn[i]=="-")
+			flipThem = (aln[i][j+1]=="-")
 			break;
 		}		
 	}

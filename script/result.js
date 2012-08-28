@@ -84,11 +84,13 @@ function makeVisualiser($alnASequences,$alnBSequences,alnA,alnB){
 function makeOutput(distances,homType,alnA){
 	var $outputDiv=$("<div/>").attr("id","output");
 	
-	var $charDistP=$("<p/>").append("Distance for focused character: ");
-	var $charDistValue=$("<span/>").attr("id","charDist").css("font-weight","bold");
-	
-	$charDistP.append($charDistValue);
-	$outputDiv.append($charDistP);
+	if(G.visualize){
+		var $charDistP=$("<p/>").append("Distance for focused character: ");
+		var $charDistValue=$("<span/>").attr("id","charDist").css("font-weight","bold");
+		
+		$charDistP.append($charDistValue);
+		$outputDiv.append($charDistP);
+	}
 	
 	var $alnDistP=$("<p/>").append("Alignment distance: ");
 	var roundedAlnDistance=Math.round((distances.alignment[homType]*1000000))/1000000;

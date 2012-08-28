@@ -53,7 +53,7 @@ function checkConsistency(alignmentA,alignmentB){
 		
 		}else{origLengths[i]=origLengthA;}
 		
-		if(origSeqA[i].toUpperCase() != origSeqB[i].toUpperCase()){
+		/*if(origSeqA[i].toUpperCase() != origSeqB[i].toUpperCase()){
 			for(var j=0; j<origLengths[i];j++){
 				var charA = origSeqA[i][j].toUpperCase();
 				var charB = origSeqB[i][j].toUpperCase();
@@ -67,7 +67,9 @@ function checkConsistency(alignmentA,alignmentB){
 				suspects="\""+alignmentA[i].name+"\""
 			}
 			throw "Sequences "+suspects+ " in each alignment are not mutually consistent. Character number "+j+" is "+charA+" in first alignment but "+charB+" in the second.";
-		} else {origSeqs[i] = origSeqA[i];}
+		} else {*/
+		origSeqs[i] = origSeqA[i];
+		//}
 	}
 	
 	return [sequenceNumber,origLengths,origSeqs];

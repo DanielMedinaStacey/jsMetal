@@ -21,14 +21,16 @@ function sequence(name,content){
 // and sequences (^[^>]+) separated by a non-captured newline (?:\n).
 // TODO: replace \w-\n with a proper selectable alphabet for each kind of sequence.
 
-function parser(alignment) {
+function parser(alignmentString,alnName) {
+	
+	
 	//return array, name of each sequence (identifier) and content (actual sequence)
 	var parsedSequences = new Array(); 
 	var name;
 	var content;
 	
 	var seqparser = new RegExp("(^>.+)(?:\n)(^[^>]+)","mg");
-	
+	G.sequenceType = "nucleotide";
 	var invalidCharacters = new RegExp("[^ABCDEFGHIKLMNOPQRSTUVWYZXabcdefghiklmnopqrstuvwyzx*-]");
 	var peptideOnlyCharacters = new RegExp("[EFILOPQZefilopqz*-]");
 										
@@ -38,28 +40,28 @@ function parser(alignment) {
 	
 	var i=0;
 	//fills the names and content arrays removing unnecesary symbols (> and \n)
-	while((parsing = seqparser.exec(alignment))){
+	while((parsing = seqparser.exec(alignmentString))){
 
 		name = parsing[1].trim().replace(/^>/,"");
 		content = parsing[2].trim().replace(/\n/g,"");
 				
 		var badChar = content.search(invalidCharacters);
 		if(badChar != -1){
-			throw "Invalid character in sequence \""+name+"\": "+content[badChar];
+			throw "Invalid character in sequence "+name+": \""+content[badChar]+"\"";
 		}
 		
 		var isPeptide= content.search(peptideOnlyCharacters);
 		if(isPeptide != -1){
-			G.sequenceType="Peptide";
+			G.sequenceType="peptide";
 		}
 		
 		parsedSequences[i] = new sequence(name,content);
 		
-		if(sequenceLength && sequenceLength != parsedSequences[i].length){
-			throw "Sequences of differing lengths in alignment";
+		if(sequenceLength && sequenceLength != parsedSequences[i].content.length){
+			throw "Sequences of differing lengths in "+alnName;
 		}
 		
-		sequenceLength = parsedSequences[i].length;
+		sequenceLength = parsedSequences[i].content.length;
 		i++;
 	}
 	return parsedSequences;
@@ -71,49 +73,111 @@ function parser(alignment) {
 // in a sequence is indexed as "1" if the first character is a gap it's indexed as "0".
 // Labelling format is "iXindex", where i is the sequence number and X is the character or gap.
 
-function labeller(alignment){	
+function labeller(alignment,tree,doEvo){	
 	var index;
 	var nextLabel;
+	var gapsHere=[];
+	for(var i =0; i<G.sequenceNumber;i++){
+		alignment[i].labeledContent=[];
+	}
 	
+	if(doEvo){
+		evoLabeller(alignment,tree);
 	
-	
+	}
 	
 	for(var i =0; i<G.sequenceNumber;i++){
-		alignment[i].labeledContent = [];
 		alignment[i].labeledContent[SSP] = [];
 		alignment[i].labeledContent[SIM] = [];
 		alignment[i].labeledContent[POS] = [];
-		//alignment[i].labeledContent[EVO] = [];
+		
 		
 		index=0;
+			
+		
 		for(var j=0;j<alignment[i].content.length;j++){
 			
 			if(alignment[i].content[j] != "-"){
-				// Label character and increase index. Using pre-increment on index to start at 1.
+				// Label character and increase index. Using pre-increment on index to start at 1 and thus allow gaps
+				// that appear before any character to be labelled as 0.
 				nextLabel = i + "X" + ++index;
 				
 				alignment[i].labeledContent[SSP].push(nextLabel);
 				alignment[i].labeledContent[SIM].push(nextLabel);
 				alignment[i].labeledContent[POS].push(nextLabel);
-				//alignment[i].labeledContent[EVO].push(nextLabel);
+				
+				if(doEvo){
+				
+					alignment[i].labeledContent[EVO][j]=nextLabel;
+				}
+				
+				
 			
 			}
 		
 			else{
+				//gapsHere[j]=true;
 				// Do not label gaps
 				alignment[i].labeledContent[SSP].push("-");
 				// Label gaps by sequence
 				alignment[i].labeledContent[SIM].push( i + "-");
 				// Label gaps by position
 				alignment[i].labeledContent[POS].push( i + "-" + index);
-				//Label gaps by voodoo
-				//alignment[i].labeledContent[EVO].push( i + "-" + index);
+				// Add position information to evo-labelled gaps.
+				if(doEvo){
+					alignment[i].labeledContent[EVO][j]=alignment[i].labeledContent[EVO][j].concat(i + "-" + index);
+					}
+				
 			}
 		}
 	}
+	//return gapsHere;
+}
+function nameLookup(alignment){
+	names=new Object();
+	for(var i =0;i<G.sequenceNumber;i++){
+		names[alignment[i].name]=i;
+		
+	}
+	return names;
 }
 
+function evoLabeller(alignment,tree){
+	
+	for(var i=0;i<G.sequenceNumber;i++){
+	
+		alignment[i].labeledContent[EVO]=[];
+
+	}
+	
+	for(var j=0;j<alignment[0].content.length;j++){
+		gapMemory = [];
+		
+		for(var i=0;i<G.sequenceNumber;i++){
+			
+			if(alignment[i].content[j] == "-"){
+				gapMemory.push(alignment[i].name);
+				
+			}
+			
+		}
+
+		
+		if(gapMemory.length>0){
+			
+			splits=tree.splitsFor(gapMemory);
+			for(var k=0;k<gapMemory.length;k++){
+				
+				alignment[G.names[gapMemory[k]]].labeledContent[EVO][j]=splits[gapMemory[k]].toString();
+			}
+					
+		}
+		
+	}
+}
 function nameSorter(a,b){
+	if (a.name == undefined && b.name != undefined){return 1;}
+	if (b.name == undefined && a.name != undefined){return -1;}
 	if (a.name < b.name) {return -1;}
 	if (a.name > b.name) {return 1;}
 	return 0;
