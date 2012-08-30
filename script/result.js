@@ -80,14 +80,13 @@ function makeVisualiser($alnASequences,$alnBSequences,alnA,alnB){
 	return $visualiserDiv;
 	
 }
-
+/*
 function makeOutput(distances,homType,alnA){
 	var $outputDiv=$("<div/>").attr("id","output");
 	
 	if(G.visualize){
-		var $charDistP=$("<p/>").append("Distance for focused character: ");
+		var $charDistP=$("<p/>").append("Distance for focused character :");
 		var $charDistValue=$("<span/>").attr("id","charDist").css("font-weight","bold");
-		
 		$charDistP.append($charDistValue);
 		$outputDiv.append($charDistP);
 	}
@@ -105,6 +104,56 @@ function makeOutput(distances,homType,alnA){
 	}
 	$outputDiv.append($alnDistP);
 	return $outputDiv;
+}*/
+////////////////////////////////////
+function makeOutput(distances,homType,alnA){
+	var $outputTable=$("<table/>").attr("id","output");
+	
+	if(G.visualize){
+		var $charDistTR=$("<tr/>");
+		var $charDistText=$("<td />").append("Distance for focused character");
+		var $charDistValue=$("<td />").attr("id","charDist").css("font-weight","bold");
+		$charDistTR.append($charDistText);
+		$charDistTR.append($charDistValue);
+		
+		$outputTable.append($charDistTR);
+	}
+	
+	var $alnDistTR=$("<tr/>");;
+	var $alnDistText=$("<td/>").append("Alignment distance");
+	var roundedAlnDistance=Math.round((distances.alignment[homType]*1000000))/1000000;
+	var $alnDistValue=$("<td/>").attr("id","alnDist").text(roundedAlnDistance);
+	$alnDistTR.append($alnDistText);
+	$alnDistTR.append($alnDistValue);
+	for(var i=0;i<G.sequenceNumber;i++){
+		var roundedSeqDistance=Math.round((distances.sequence[homType][i]*1000000))/1000000;
+		var $seqDistTR=$("<tr/>");
+		var $seqDistText = $("<td/>").append("Distance for sequence "+alnA[i].name);
+		var $seqDistValue=$("<td/>").attr("id",alnA[i].name+"_dist").text(roundedSeqDistance);
+		$seqDistTR.append($seqDistText);
+		$seqDistTR.append($seqDistValue);
+		$outputTable.append($seqDistTR);
+	}
+	$outputTable.append($alnDistTR);
+	return $outputTable;
+}
+////////////////////////////////////
+
+
+
+function makeCharDist(distances,homType,alnA){
+	var $charDistDiv=$("<div/>").attr("id","chardists");
+	var $charDistParagraphs = [];
+	for(var i=0;i<G.sequenceNumber;i++){
+		var charDistString=[];
+		charDistString.push(alnA[i].name);
+		for(var j = 0;j<G.origLengths[i];j++){
+			charDistString.push(distances.character[homType][i][j]);
+		}
+		$charDistParagraphs[i]=$("<p/>").attr("id","chardists_"+alnA[i].name).html(charDistString.toString());
+		$charDistDiv.append($charDistParagraphs[i]);
+	}
+	return $charDistDiv;
 }
 
 	

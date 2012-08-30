@@ -100,8 +100,12 @@ function process() {
 	}
 	
 	G.visualize=$("#visualize:checked").val();
+	
 		
 	$("#controlPanel").css("display","");
+	$("#sameOpacity").html("Fade distant "+G.sequenceType+"s");
+	$("#diffOpacity").html("Fade close "+G.sequenceType+"s");
+	
 	$("#input").remove();
 	$("#instructions").remove();
 	var homType=parseInt($('#homologyType option:selected').val());
@@ -282,9 +286,25 @@ function process() {
 				changeDistanceVisualization(cssCache[homType][visType]);
 			}
 			
+			if(G.charDists){
+				var newCharDists=makeCharDist(distances,homType,alnA);
+				$("#chardists").replaceWith(newCharDists);
+			}
+			
 			
 		});
-		
+	
+	
+	$("#showCharDists").change(function() {
+		G.charDists=$("#showCharDists:checked").val();
+		if(G.charDists){
+			$("body").append(makeCharDist(distances,homType,alnA));
+		}
+		else{
+			$("#chardists").remove();
+			}
+		}
+		);
 	var $output = makeOutput(distances,homType,alnA);
 	$("body").append($output);
 	

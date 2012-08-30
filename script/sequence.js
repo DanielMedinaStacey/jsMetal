@@ -52,7 +52,7 @@ function parser(alignmentString,alnName) {
 		
 		var isPeptide= content.search(peptideOnlyCharacters);
 		if(isPeptide != -1){
-			G.sequenceType="peptide";
+			G.sequenceType="amino acid";
 		}
 		
 		parsedSequences[i] = new sequence(name,content);

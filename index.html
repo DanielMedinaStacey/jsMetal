@@ -48,12 +48,13 @@
 		<div id="distanceVisualizationPanel" style="display:none;">
 			<p>Distance visualization scheme: 
 			<select name="distanceVisualizationType" id="distanceVisualizationType">
-				<option name="distanceVisualizationOption" id="noDistance" selected="selected" value="2">None</option>
+				<option name="distanceVisualizationOption" id="noDistance" selected="selected" value="2">Simple colours</option>
 				<option name="distanceVisualizationOption" id="redfade" value="3">255 Shades of Red</option>
-				<option name="distanceVisualizationOption" id="sameOpacity" value="0">Fade distant aminoacids/nucleotides</option>
-				<option name="distanceVisualizationOption" id="diffOpacity" value="1">Fade close aminoacids/nucleotides</option>
+				<option name="distanceVisualizationOption" id="sameOpacity" value="0">Fade distant characters</option>
+				<option name="distanceVisualizationOption" id="diffOpacity" value="1">Fade close characters</option>
 			</select></p>
 		</div>
+		<label><input type="checkbox" name="button" value="true" id="showCharDists" />Display individual character distances (CSV)</label>
 	</div>
 	
 	<div id="input"><h3>Alignment 1</h3>

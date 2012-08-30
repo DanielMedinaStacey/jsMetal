@@ -39,6 +39,18 @@ a:hover { color: #036; }
 #visualiser{
 	white-space:nowrap;width:auto;margin:0px;height:auto;overflow:hidden;font-size:12px;
 	background-color: white;
+	border-style:dotted;
+	border-width:2px;
+	border-color:black;
+}
+
+#chardists{
+	white-space:nowrap;width:auto;margin:0px;height:auto;overflow:scroll;font-size:12px;
+	background-color: white;
+	font-family:monospace;
+	border-style:dotted;
+	border-width:2px;
+	border-color:black;
 }
 
 #header{
@@ -48,6 +60,8 @@ a:hover { color: #036; }
 	height: 2 em;
 	line-height:2em;
 	background-color: gold;
+	border-style:ridge;
+	border-width:5px;
 }
 #progname{
 	font-size:30px;
@@ -95,10 +109,11 @@ font-weight:bold;
 }
 #instructions p cite {
 font-family:"Georgia", "Times New Roman", Times, serif;
-
-
 }
 
+#output td{
+padding:0.25em;
+}
 
 div.names{
 	font-family: monospace;
