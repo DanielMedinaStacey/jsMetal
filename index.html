@@ -5,6 +5,7 @@
 	<link rel="stylesheet" type="text/css" media="all" href="style.css" />
 	
 	<link rel="stylesheet" type="text/css" id="seqColour" href="./nucleotide.css" > 
+	<link rel="stylesheet" type="text/css" id="fading" href="./none.css" > 
 	
 	
 	<title>jsMetal &mdash; alignment distance metrics in JavaScript</title>
@@ -48,10 +49,10 @@
 		<div id="distanceVisualizationPanel" style="display:none;">
 			<p>Distance visualization scheme: 
 			<select name="distanceVisualizationType" id="distanceVisualizationType" autocomplete="off">
-				<option name="distanceVisualizationOption" id="noDistance" selected="selected" value="2">Simple colours</option>
-				<option name="distanceVisualizationOption" id="redfade" value="3">255 Shades of Red</option>
-				<option name="distanceVisualizationOption" id="sameOpacity" value="0">Fade distant characters</option>
-				<option name="distanceVisualizationOption" id="diffOpacity" value="1" >Fade close characters</option>
+				<option name="distanceVisualizationOption" id="noDistance" selected="selected" value="0">Simple colours</option>
+				<option name="distanceVisualizationOption" id="redfade" value="1">255 Shades of Red</option>
+				<option name="distanceVisualizationOption" id="sameOpacity" value="2">Fade distant characters</option>
+				<option name="distanceVisualizationOption" id="diffOpacity" value="3" >Fade close characters</option>
 			</select></p>
 		</div>
 		<label><input type="checkbox" name="button" value="true" id="showCharDists" autocomplete="off"/>Display individual character distances (CSV)</label>

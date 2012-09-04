@@ -124,140 +124,30 @@ function process() {
 		var $visualiser = makeVisualiser($alnASeqDiv[homType],$alnBSeqDiv[homType],alnA,alnB);
 		
 		$("body").append($visualiser);
-		
-		//get width of sequence display and characters
-		var divWidth = $("#alnA_seqs").outerWidth();
-		var charWidth =  getCharWidth();
-		
-		//add padding to each end of sequences such that both first and last characters can be displayed in centre of  visualiser
-		var padChars=parseInt(0.5*divWidth/charWidth)
-		var padding = charPadding(padChars);
-		for(var i=0;i<G.sequenceNumber;i++){
-			$(".seq_"+i).prepend(padding);
-			$(".seq_"+i).append(padding);
-		}
-		
-		//make initial scroll position feel natural by showing start of alignment on the left of the display
-		var startScroll=(parseInt(0.5*divWidth/charWidth))*charWidth;
-		$("#alnA_seqs").scrollLeft(startScroll);
-		$("#alnB_seqs").scrollLeft(startScroll);
-		
-		// alnXPositionOf array indicates the position j of character number i in the true sequence in alignment X
-		// alnXCharacterAt array indicates what character i of the true sequence is at position number j in alignment X
-		// yes, each pair of arrays is complementary
-		var alnAPositionOf, alnACharacterAt, alnBPositionOf, alnBCharacterAt;
-		var alnACharPos = getPositions(alnA);
-		var alnBCharPos = getPositions(alnB);
-		
-		var alnAPositionOf = alnACharPos[0];
-		var alnACharacterAt = alnACharPos[1];
-		
-		var alnBPositionOf = alnBCharPos[0];
-		var alnBCharacterAt = alnBCharPos[1];
-		
-		//"Central" is the character
-		var oldCentral="";
-		var focusSeq=0;
-		var oldFocusSeq=focusSeq;
-		
-		$("#alnA_seqs").bind('click', function(event) {
-		
-			focusSeq = $(event.target).closest("div").index();
-			central = alnACharacterAt[focusSeq][$(event.target).closest("span").index() - padChars];
-			$("#alnA"+"_"+oldFocusSeq+"_"+oldCentral).removeClass("centralChar");
-			$("#alnB"+"_"+oldFocusSeq+"_"+oldCentral).removeClass("centralChar");
-			
-			oldFocusSeq=focusSeq;
-			
-			$("#alnA_seqs").scrollLeft(alnAPositionOf[focusSeq][central]*charWidth);
-			$("#alnB_seqs").scrollLeft(alnBPositionOf[focusSeq][central]*charWidth);
-	
-			oldCentral=central;
-			
-			$("#charDist").text(distances.character[homType][focusSeq][central]);
-			$("#alnA"+"_"+focusSeq+"_"+central).addClass("centralChar");
-			$("#alnB"+"_"+focusSeq+"_"+central).addClass("centralChar");
-		});
-	
-		$("#alnB_seqs").bind('click', function(event) {
-			
-			focusSeq = $(event.target).closest("div").index();
-			central = alnBCharacterAt[focusSeq][$(event.target).closest("span").index() - padChars];
-			$("#alnA"+"_"+oldFocusSeq+"_"+oldCentral).removeClass("centralChar");
-			$("#alnB"+"_"+oldFocusSeq+"_"+oldCentral).removeClass("centralChar");
-			
-			oldFocusSeq=focusSeq;
-			
-			$("#alnA_seqs").scrollLeft(alnAPositionOf[focusSeq][central]*charWidth);
-			$("#alnB_seqs").scrollLeft(alnBPositionOf[focusSeq][central]*charWidth);
-	
-			oldCentral=central;
-			
-			$("#charDist").text(distances.character[homType][focusSeq][central]);
-			$("#alnA"+"_"+focusSeq+"_"+central).addClass("centralChar");
-			$("#alnB"+"_"+focusSeq+"_"+central).addClass("centralChar");
-		});
-	
-		$("#alnA_seqs").scroll(function() { 
-			$("#alnA_names").scrollTop($("#alnA_seqs").scrollTop());
-			$("#alnB_seqs").scrollTop($("#alnA_seqs").scrollTop());
-		
-			$("#alnA"+"_"+focusSeq+"_"+oldCentral).removeClass("centralChar");
-			$("#alnB"+"_"+focusSeq+"_"+oldCentral).removeClass("centralChar");
-			
-			central=alnACharacterAt[focusSeq][Math.round($("#alnA_seqs").scrollLeft()/charWidth)];
-			
-			oldCentral=central;
-			
-			$("#charDist").text(distances.character[homType][focusSeq][central]);
-			$("#alnA"+"_"+focusSeq+"_"+central).addClass("centralChar");
-			$("#alnB_seqs").scrollLeft(alnBPositionOf[focusSeq][central]*charWidth);
-			$("#alnB"+"_"+focusSeq+"_"+central).addClass("centralChar");
-		});
-		
-		$("#alnB_seqs").scroll(function() { 
-			$("#alnB_names").scrollTop($("#alnB_seqs").scrollTop());
-			$("#alnA_seqs").scrollTop($("#alnB_seqs").scrollTop());
-			
-			
-			$("#alnA"+"_"+focusSeq+"_"+oldCentral).removeClass("centralChar");
-			$("#alnB"+"_"+focusSeq+"_"+oldCentral).removeClass("centralChar");
-			
-			central=alnBCharacterAt[focusSeq][Math.round($("#alnB_seqs").scrollLeft()/charWidth)];
-			
-			oldCentral=central;
-			
-			$("#charDist").text(distances.character[homType][focusSeq][central]);
-			$("#alnB"+"_"+focusSeq+"_"+central).addClass("centralChar");
-			$("#alnA_seqs").scrollLeft(alnAPositionOf[focusSeq][central]*charWidth);
-			$("#alnA"+"_"+focusSeq+"_"+central).addClass("centralChar");
-		});
-	
+		rebind(homType);
 		
 		$("#distanceVisualizationType").change(function () {
 			$("#distanceVisualizationType option:selected").each(function () {
 				
 				visType=parseInt($(this).val());
 				switch (visType){
+				case 0:
+					$("#seqColour").attr('href','./'+G.sequenceType+'.css');
+					$("#fading").attr('href',"./none.css");
+					break;
+				case 1:
+					$("#seqColour").attr('href','./redfade.css');
+					$("#fading").attr('href',"./none.css");
+					
+					break;
 				case 2:
 					$("#seqColour").attr('href','./'+G.sequenceType+'.css');
-					changeDistanceVisualization();
+					$("#fading").attr('href',"./fadeDist.css");
+					
 					break;
 				case 3:
-					$("#seqColour").attr('href','./redfade.css');
-					changeDistanceVisualization();
-					//$("#visual").attr('href','./redfade.css');
-					
-					break;
-				default:
 					$("#seqColour").attr('href','./'+G.sequenceType+'.css');
-					if(cssCache[homType][visType] == undefined){
-						cssCache[homType][visType] = [];
-						cssCache[homType][visType]=transparentAminoCSS(distances.character[homType],visType);
-					}
-					changeDistanceVisualization(cssCache[homType][visType]);
-					
-					break;
+					$("#fading").attr('href',"./fadeNear.css");
 				}
 				
 				});
@@ -278,12 +168,19 @@ function process() {
 			$("#alnDist").text(roundedAlnDistance);
 			
 			if(G.visualize){
-		
-				if(cssCache[homType][visType] == undefined){
-					cssCache[homType][visType] = [];
-					cssCache[homType][visType]=transparentAminoCSS(distances.character[homType],visType);
-				}
-				changeDistanceVisualization(cssCache[homType][visType]);
+				$("#alnA_seqs").unbind();
+				$("#alnB_seqs").unbind();
+				centralMemory=G.alnACharacterAt[G.focusSeq][Math.round($("#alnA_seqs").scrollLeft()/G.charWidth)];
+				$(".centralChar").removeClass("centralChar");
+				$("#alnA_seqs").replaceWith($alnASeqDiv[homType]);
+				$("#alnB_seqs").replaceWith($alnBSeqDiv[homType]);
+			
+				rebind(homType);
+				$(".centralChar").removeClass("centralChar");
+				$("#alnA_seqs").scrollLeft(G.alnAPositionOf[G.focusSeq][centralMemory]*G.charWidth);
+				$("#alnA"+"_"+G.focusSeq+"_"+centralMemory).addClass("centralChar");
+				$("#alnA"+"_"+G.focusSeq+"_"+centralMemory).addClass("centralChar");
+				
 			}
 			
 			if(G.charDists){
@@ -315,3 +212,130 @@ function process() {
 	
 	
 }
+
+function rebind(homType){
+		
+	//get width of sequence display and characters	
+		G.divWidth = $("#alnA_seqs").outerWidth();
+		G.charWidth =  getCharWidth();
+		
+		//add padding to each end of sequences such that both first and last characters can be displayed in centre of  visualiser
+		
+		if( $(".seq_"+0).html().match("&nbsp") ){
+		}else{
+			var padChars=parseInt(0.5*G.divWidth/G.charWidth)
+			var padding = charPadding(padChars);
+			for(var i=0;i<G.sequenceNumber;i++){
+				$(".seq_"+i).prepend(padding);
+				$(".seq_"+i).append(padding);
+			}
+		}
+		
+		//make initial scroll position feel natural by showing start of alignment on the left of the display
+		var startScroll=(parseInt(0.5*G.divWidth/G.charWidth))*G.charWidth;
+		console.log(startScroll)
+		
+		$("#alnA_seqs").scrollLeft(startScroll);
+		$("#alnB_seqs").scrollLeft(startScroll);
+		
+		// alnXPositionOf array indicates the position j of character number i in the true sequence in alignment X
+		// alnXCharacterAt array indicates what character i of the true sequence is at position number j in alignment X
+		// yes, each pair of arrays is complementary
+		//var alnAPositionOf, alnACharacterAt, alnBPositionOf, alnBCharacterAt;
+		var alnACharPos = getPositions(alnA);
+		var alnBCharPos = getPositions(alnB);
+		
+		var alnAPositionOf = alnACharPos[0];
+		var alnACharacterAt = alnACharPos[1];
+		G.alnACharacterAt = alnACharPos[1];
+		G.alnAPositionOf = alnACharPos[0];
+		
+		var alnBPositionOf = alnBCharPos[0];
+		var alnBCharacterAt = alnBCharPos[1];
+		
+		//"Central" is the character
+		var oldCentral="";
+		G.focusSeq=0;
+		var oldFocusSeq=G.focusSeq;
+		
+		$("#alnA_seqs").bind('click', function(event) {
+		
+			G.focusSeq = $(event.target).closest("div").index();
+			
+			central = alnACharacterAt[G.focusSeq][$(event.target).closest("span").index() - padChars];
+			console.log(central);
+			
+			$("#alnA"+"_"+oldFocusSeq+"_"+oldCentral).removeClass("centralChar");
+			$("#alnB"+"_"+oldFocusSeq+"_"+oldCentral).removeClass("centralChar");
+			
+			oldFocusSeq=G.focusSeq;
+			
+			$("#alnA_seqs").scrollLeft(alnAPositionOf[G.focusSeq][central]*G.charWidth);
+			$("#alnB_seqs").scrollLeft(alnBPositionOf[G.focusSeq][central]*G.charWidth);
+	
+			oldCentral=central;
+			
+			$("#charDist").text(distances.character[homType][G.focusSeq][central]);
+			$("#alnA"+"_"+G.focusSeq+"_"+central).addClass("centralChar");
+			$("#alnB"+"_"+G.focusSeq+"_"+central).addClass("centralChar");
+			G.central=central;
+		});
+	
+		$("#alnB_seqs").bind('click', function(event) {
+			
+			G.focusSeq = $(event.target).closest("div").index();
+			central = alnBCharacterAt[G.focusSeq][$(event.target).closest("span").index() - padChars];
+			$("#alnA"+"_"+oldFocusSeq+"_"+oldCentral).removeClass("centralChar");
+			$("#alnB"+"_"+oldFocusSeq+"_"+oldCentral).removeClass("centralChar");
+			
+			oldFocusSeq=G.focusSeq;
+			
+			$("#alnA_seqs").scrollLeft(alnAPositionOf[G.focusSeq][central]*G.charWidth);
+			$("#alnB_seqs").scrollLeft(alnBPositionOf[G.focusSeq][central]*G.charWidth);
+	
+			oldCentral=central;
+			
+			$("#charDist").text(distances.character[homType][G.focusSeq][central]);
+			$("#alnA"+"_"+G.focusSeq+"_"+central).addClass("centralChar");
+			$("#alnB"+"_"+G.focusSeq+"_"+central).addClass("centralChar");
+			G.central=central;
+		});
+	
+		$("#alnA_seqs").scroll(function() { 
+			$("#alnA_names").scrollTop($("#alnA_seqs").scrollTop());
+			$("#alnB_seqs").scrollTop($("#alnA_seqs").scrollTop());
+		
+			$("#alnA"+"_"+G.focusSeq+"_"+oldCentral).removeClass("centralChar");
+			$("#alnB"+"_"+G.focusSeq+"_"+oldCentral).removeClass("centralChar");
+			
+			central=alnACharacterAt[G.focusSeq][Math.round($("#alnA_seqs").scrollLeft()/G.charWidth)];
+			
+			oldCentral=central;
+			
+			$("#charDist").text(distances.character[homType][G.focusSeq][central]);
+			$("#alnA"+"_"+G.focusSeq+"_"+central).addClass("centralChar");
+			$("#alnB_seqs").scrollLeft(alnBPositionOf[G.focusSeq][central]*G.charWidth);
+			$("#alnB"+"_"+G.focusSeq+"_"+central).addClass("centralChar");
+			G.central=central;
+		});
+		
+		$("#alnB_seqs").scroll(function() { 
+			$("#alnB_names").scrollTop($("#alnB_seqs").scrollTop());
+			$("#alnA_seqs").scrollTop($("#alnB_seqs").scrollTop());
+			
+			
+			$("#alnA"+"_"+G.focusSeq+"_"+oldCentral).removeClass("centralChar");
+			$("#alnB"+"_"+G.focusSeq+"_"+oldCentral).removeClass("centralChar");
+			
+			central=alnBCharacterAt[G.focusSeq][Math.round($("#alnB_seqs").scrollLeft()/G.charWidth)];
+			
+			oldCentral=central;
+			
+			$("#charDist").text(distances.character[homType][G.focusSeq][central]);
+			$("#alnB"+"_"+G.focusSeq+"_"+central).addClass("centralChar");
+			$("#alnA_seqs").scrollLeft(alnAPositionOf[G.focusSeq][central]*G.charWidth);
+			$("#alnA"+"_"+G.focusSeq+"_"+central).addClass("centralChar");
+			G.central=central;
+		});
+	}
+
