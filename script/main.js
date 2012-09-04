@@ -124,6 +124,7 @@ function process() {
 		var $visualiser = makeVisualiser($alnASeqDiv[homType],$alnBSeqDiv[homType],alnA,alnB);
 		
 		$("body").append($visualiser);
+		G.focusSeq=0;
 		rebind(homType);
 		
 		$("#distanceVisualizationType").change(function () {
@@ -170,16 +171,15 @@ function process() {
 			if(G.visualize){
 				$("#alnA_seqs").unbind();
 				$("#alnB_seqs").unbind();
-				centralMemory=G.alnACharacterAt[G.focusSeq][Math.round($("#alnA_seqs").scrollLeft()/G.charWidth)];
+				keepScroll=$("#alnA_seqs").scrollLeft();
 				$(".centralChar").removeClass("centralChar");
 				$("#alnA_seqs").replaceWith($alnASeqDiv[homType]);
 				$("#alnB_seqs").replaceWith($alnBSeqDiv[homType]);
 			
 				rebind(homType);
 				$(".centralChar").removeClass("centralChar");
-				$("#alnA_seqs").scrollLeft(G.alnAPositionOf[G.focusSeq][centralMemory]*G.charWidth);
-				$("#alnA"+"_"+G.focusSeq+"_"+centralMemory).addClass("centralChar");
-				$("#alnA"+"_"+G.focusSeq+"_"+centralMemory).addClass("centralChar");
+				$("#alnA_seqs").scrollLeft(keepScroll);
+				//$("#alnA_seqs").scrollLeft(keepScroll);
 				
 			}
 			
@@ -223,7 +223,8 @@ function rebind(homType){
 		
 		if( $(".seq_"+0).html().match("&nbsp") ){
 		}else{
-			var padChars=parseInt(0.5*G.divWidth/G.charWidth)
+			var padChars=parseInt(0.5*G.divWidth/G.charWidth);
+			G.padChars=padChars;
 			var padding = charPadding(padChars);
 			for(var i=0;i<G.sequenceNumber;i++){
 				$(".seq_"+i).prepend(padding);
@@ -255,15 +256,15 @@ function rebind(homType){
 		
 		//"Central" is the character
 		var oldCentral="";
-		G.focusSeq=0;
+		
 		var oldFocusSeq=G.focusSeq;
 		
 		$("#alnA_seqs").bind('click', function(event) {
 		
 			G.focusSeq = $(event.target).closest("div").index();
 			
-			central = alnACharacterAt[G.focusSeq][$(event.target).closest("span").index() - padChars];
-			console.log(central);
+			central = alnACharacterAt[G.focusSeq][$(event.target).closest("span").index() - G.padChars];
+	
 			
 			$("#alnA"+"_"+oldFocusSeq+"_"+oldCentral).removeClass("centralChar");
 			$("#alnB"+"_"+oldFocusSeq+"_"+oldCentral).removeClass("centralChar");
@@ -284,7 +285,7 @@ function rebind(homType){
 		$("#alnB_seqs").bind('click', function(event) {
 			
 			G.focusSeq = $(event.target).closest("div").index();
-			central = alnBCharacterAt[G.focusSeq][$(event.target).closest("span").index() - padChars];
+			central = alnBCharacterAt[G.focusSeq][$(event.target).closest("span").index() - G.padChars];
 			$("#alnA"+"_"+oldFocusSeq+"_"+oldCentral).removeClass("centralChar");
 			$("#alnB"+"_"+oldFocusSeq+"_"+oldCentral).removeClass("centralChar");
 			
