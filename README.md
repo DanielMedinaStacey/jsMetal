@@ -1,4 +1,4 @@
 jsMetal
 =======
 
-Distance alignment metrics in JavaScript
+Alignment distance metrics in JavaScript
